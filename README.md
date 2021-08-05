@@ -2,10 +2,10 @@
   <img align="center" src="https://img.shields.io/static/v1?style=for-the-badge&label=author&message=uinnn&color=informational"/>
 </a>
 <a href="https://github.com/uinnn/database-framework">
-  <img align="center" src="https://img.shields.io/static/v1?style=for-the-badge&label=version&message=1.0.3v&color=ff69b4"/>
+  <img align="center" src="https://img.shields.io/github/v/release/uinnn/database-framework?color=yellow&label=database-framework&style=for-the-badge"/>
 </a>
 <a href="https://github.com/uinnn/database-framework">
-  <img align="center" src="https://img.shields.io/static/v1?style=for-the-badge&label=maven-central&message=1.0.3&color=orange"/>
+  <img align="center" src="https://img.shields.io/github/v/release/uinnn/database-framework?color=ff69b4&label=maven-central&style=for-the-badge"/>
 </a>
 <a href="https://github.com/uinnn/database-framework">
   <img align="center" src="https://img.shields.io/static/v1?style=for-the-badge&label=license&message=MIT License&color=success"/>
