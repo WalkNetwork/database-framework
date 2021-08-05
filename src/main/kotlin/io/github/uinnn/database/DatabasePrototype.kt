@@ -99,7 +99,7 @@ interface ServerDatabasePrototype : DatabasePrototype {
   var databaseName: String
 
   /**
-   * If this server database prototype uses secure socket layer in connections.
+   * If this server database prototype uses secure socket layer (SSL) in connections.
    */
   var useSSl: Boolean
 }
