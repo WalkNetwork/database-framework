@@ -254,6 +254,33 @@ UserTableManager.updateOrInsertAll(map)
 UserTableManager.manageUpdateOrInsertAll(map)
 ```
 
+### Asynchronously transactions
+To use asynchronously transactions is very simple:
+```kt
+database.management { // asynchronous transaction scope
+  UserTableManager.create() // creates the table
+  // inserts 10 entity in the database
+  repeat(10) {
+    UserTableManager.insert(it, Model())
+  }
+}
+```
+
+### Lazy management
+The lazy management is very similar to the default management, but this will not be executed until a start function is called.
+```kt
+val management = database.lazyManagement { // asynchronous transaction scope
+  UserTableManager.create() // creates the table
+  // inserts 10 entity in the database
+  repeat(10) {
+    UserTableManager.insert(it, Model())
+  }
+}
+
+// starts the management
+management.start()
+```
+
 ---
 
 ## Setup for development
