@@ -24,6 +24,7 @@ SOFTWARE.
 
 package io.github.uinnn.database.common
 
+import io.github.uinnn.database.common.DatabaseScope.manage
 import org.jetbrains.exposed.dao.Entity
 import org.jetbrains.exposed.sql.*
 
@@ -93,8 +94,8 @@ abstract class AbstractTableManager<K, V, T : Entity<*>>(
  * Manages a management from [DatabaseScope] to inserts a
  * key-value in this table directly.
  */
-fun <K, V> TableManager<K, V, *>.manageNew(key: K, value: V) {
-  database.management {
+fun <K, V> TableManager<K, V, *>.manageInsert(key: K, value: V) {
+  management {
     insert(key, value)
   }
 }
@@ -104,7 +105,7 @@ fun <K, V> TableManager<K, V, *>.manageNew(key: K, value: V) {
  * a key in this table directly.
  */
 fun <K, V> TableManager<K, V, *>.manageUpdate(key: K, value: V) {
-  database.management {
+  management {
     update(key, value)
   }
 }
@@ -114,7 +115,7 @@ fun <K, V> TableManager<K, V, *>.manageUpdate(key: K, value: V) {
  * or insert a key in this table directly.
  */
 fun <K, V> TableManager<K, V, *>.manageUpdateOrInsert(key: K, value: V) {
-  database.management {
+  management {
     updateOrInsert(key, value)
   }
 }
@@ -131,7 +132,7 @@ fun <K> TableManager<K, *, *>.delete(key: K) {
  * a key in this table directly.
  */
 fun <K> TableManager<K, *, *>.manageDelete(key: K) {
-  database.management {
+  management {
     delete(key)
   }
 }
@@ -167,7 +168,7 @@ fun TableManager<*, *, *>.deleteAll(): Int = table.deleteAll()
  * contents of this table directly.
  */
 fun TableManager<*, *, *>.manageDeleteAll() {
-  database.management {
+  management {
     deleteAll()
   }
 }
@@ -182,7 +183,7 @@ fun TableManager<*, *, *>.create() = SchemaUtils.create(table)
  * this table if not exists.
  */
 fun TableManager<*, *, *>.manageCreate() {
-  database.management {
+  management {
     SchemaUtils.create(table)
   }
 }
@@ -200,7 +201,7 @@ fun <K, V> TableManager<K, V, *>.updateAll(map: Map<K, V>) {
  * all key-values from a specified map.
  */
 fun <K, V> TableManager<K, V, *>.manageUpdateAll(map: Map<K, V>) {
-  database.management {
+  management {
     updateAll(map)
   }
 }
@@ -218,7 +219,7 @@ fun <K, V> TableManager<K, V, *>.insertAll(map: Map<K, V>) {
  * all key-values from a specified map.
  */
 fun <K, V> TableManager<K, V, *>.manageInsertAll(map: Map<K, V>) {
-  database.management {
+  management {
     insertAll(map)
   }
 }
@@ -236,7 +237,7 @@ fun <K, V> TableManager<K, V, *>.updateOrInsertAll(map: Map<K, V>) {
  * or insert all key-values from a specified map.
  */
 fun <K, V> TableManager<K, V, *>.manageUpdateOrInsertAll(map: Map<K, V>) {
-  database.management {
+  management {
     updateOrInsertAll(map)
   }
 }
@@ -254,7 +255,7 @@ fun TableManager<*, *, *>.deleteIf(limit: Int? = null, offset: Long? = null, act
  * from the specified sql expression. You can also specify the limit and offset.
  */
 fun TableManager<*, *, *>.manageDeleteIf(limit: Int? = null, offset: Long? = null, action: SQLExpression) {
-  database.management {
+  management {
     deleteIf(limit, offset, action)
   }
 }
@@ -264,5 +265,26 @@ fun TableManager<*, *, *>.manageDeleteIf(limit: Int? = null, offset: Long? = nul
  */
 fun TableManager<*, *, *>.selectAll(): Query = table.selectAll()
 
+/**
+ * Manages a [manage] in launch coroutine scope with this database.
+ */
+fun <T> TableManager<*, *, *>.management(action: Management<T>) =
+  DatabaseScope.management(database, action)
 
+/**
+ * Manages a [manage] in launch coroutine scope with this database with start as lazy.
+ */
+fun <T> TableManager<*, *, *>.lazyManagement(action: Management<T>) =
+  DatabaseScope.lazyManagement(database, action)
 
+/**
+ * Manages a [manage] in async coroutine scope with this database.
+ */
+fun <T> TableManager<*, *, *>.managementAsync(action: Management<T>) =
+  DatabaseScope.managementAsync(database, action)
+
+/**
+ * Manages a [manage] in launch coroutine scope with this database with start as lazy.
+ */
+fun <T> TableManager<*, *, *>.lazyManagementAsync(action: Management<T>) =
+  DatabaseScope.lazyManagementAsync(database, action)
