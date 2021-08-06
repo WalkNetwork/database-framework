@@ -322,7 +322,7 @@ dependencies {
   implementation(kotlin("stdlib-jdk8")) // the kotlin std lib with jdk8 
   implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.1") // the kotlin coroutines used to asynchronously manage
   
-  implementation("io.github.uinnn:serializer-framework:1.6.3") // the serializer framework used to use new column types
+  implementation("io.github.uinnn:serializer-framework:1.6.5") // the serializer framework used to use new column types
   
   // the following dependencies is marked as API by the database-framework:
   api("com.zaxxer:HikariCP:4.0.3") // the hikariCP version 4.0.3
