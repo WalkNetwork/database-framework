@@ -22,51 +22,48 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+package walkmc.database
 
-package io.github.uinnn.database
-
-import com.zaxxer.hikari.HikariDataSource
-import org.jetbrains.exposed.sql.Database
-import java.io.File
-import javax.sql.DataSource
+import com.zaxxer.hikari.*
+import org.jetbrains.exposed.sql.*
+import java.io.*
+import javax.sql.*
 
 /**
- * A abstract implementation of [DatabasePrototype].
+ * A abstract implementation of [Storage].
  * This is a skeletal model for creating new database prototypes.
  */
-abstract class AbstractDatabasePrototype(override val type: DatabaseType) : DatabasePrototype {
-  override val source: DataSource by lazy { HikariDataSource(config) }
-  override val database: Database by lazy {
-    Database.connect(source)
-  }
+abstract class AbstractStorage(override val type: DatabaseType) : Storage {
+	override val source: DataSource by lazy { HikariDataSource(config) }
+	override val database: Database by lazy { Database.connect(source) }
 }
 
 /**
- * A abstract implementation of [LocalDatabasePrototype].
+ * A abstract implementation of [LocalStorage].
  * This is a skeletal model for creating new local database prototypes.
  */
-abstract class AbstractLocalDatabasePrototype(
-  type: DatabaseType,
-  override var file: File
-) : AbstractDatabasePrototype(type), LocalDatabasePrototype {
-  init {
-    file.parentFile.mkdirs()
-    if (type == DatabaseType.SQLITE && !file.exists()) {
-      file.createNewFile()
-    }
-  }
+abstract class AbstractLocalStorage(
+	type: DatabaseType,
+	override var file: File,
+) : AbstractStorage(type), LocalStorage {
+	init {
+		file.parentFile?.mkdirs()
+		if (type == DatabaseType.SQLITE && !file.exists()) {
+			file.createNewFile()
+		}
+	}
 }
 
 /**
- * A abstract implementation of [ServerDatabasePrototype].
+ * A abstract implementation of [ServerStorage].
  * This is a skeletal model for creating new server database prototypes.
  */
-abstract class AbstractServerDatabasePrototype(
-  type: DatabaseType,
-  override var username: String,
-  override var password: String,
-  override var databaseName: String,
-  override var host: String,
-  override var port: Int = 3306,
-  override var useSSl: Boolean = false
-) : AbstractDatabasePrototype(type), ServerDatabasePrototype
+abstract class AbstractServerStorage(
+	type: DatabaseType,
+	override var username: String,
+	override var password: String,
+	override var databaseName: String,
+	override var host: String,
+	override var port: Int = 3306,
+	override var useSSl: Boolean = false,
+) : AbstractStorage(type), ServerStorage

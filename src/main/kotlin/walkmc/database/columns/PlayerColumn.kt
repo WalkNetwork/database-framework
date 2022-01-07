@@ -22,17 +22,46 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package io.github.uinnn.database.columns
+package walkmc.database.columns
 
-import org.bukkit.OfflinePlayer
-import org.jetbrains.exposed.sql.Table
+import kotlinx.serialization.modules.*
+import org.bukkit.entity.*
+import org.jetbrains.exposed.dao.*
+import org.jetbrains.exposed.dao.Entity
+import org.jetbrains.exposed.dao.id.*
+import org.jetbrains.exposed.sql.*
+import walkmc.serializer.common.*
 
 /**
  * Represents a player column type thats is registered from a [JsonVarcharColumnType].
  */
-class PlayerColumnType : JsonVarcharColumnType<OfflinePlayer>(16, OfflinePlayer::class)
+class PlayerColumnType(
+	length: Int = 16,
+	module: SerializersModule = FrameworkModule
+) : JsonVarcharColumnType<Player>(length, Player::class, module)
+
+/**
+ * Represents a id table that their primary key is a player.
+ */
+abstract class PlayerTable : IdTable<Player>() {
+	override val id = player("id").entityId()
+	override val primaryKey by lazy { PrimaryKey(id) }
+}
+
+/**
+ * Represents a player database entity.
+ */
+abstract class PlayerEntity(id: EntityID<Player>) : Entity<Player>(id)
+
+/**
+ * Represents a player database entity class.
+ */
+abstract class PlayerEntityClass<T : Entity<Player>>(
+	table: IdTable<Player>,
+) : EntityClass<Player, T>(table)
 
 /**
  * Registers a player column, with specified name in this table.
  */
-fun Table.player(name: String) = registerColumn<OfflinePlayer>(name, PlayerColumnType())
+fun Table.player(name: String, length: Int = 16, module: SerializersModule = FrameworkModule) =
+	registerColumn<Player>(name, PlayerColumnType(length, module))

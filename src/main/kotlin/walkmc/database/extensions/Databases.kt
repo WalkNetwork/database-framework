@@ -22,17 +22,27 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package io.github.uinnn.database.columns
+package walkmc.database.extensions
 
-import org.bukkit.World
-import org.jetbrains.exposed.sql.Table
-
-/**
- * Represents a world column type thats is registered from a [JsonVarcharColumnType].
- */
-class WorldColumnType : JsonVarcharColumnType<World>(12, World::class)
+import org.jetbrains.exposed.sql.*
+import walkmc.database.*
 
 /**
- * Registers a world column, with specified name in this table.
+ * Manages a [action] in launch coroutine scope.
  */
-fun Table.world(name: String) = registerColumn<World>(name, WorldColumnType())
+fun <T> Database.management(action: Management<T>) = DatabaseScope.management(this, action)
+
+/**
+ * Manages a [action] in launch coroutine scope with start as lazy.
+ */
+fun <T> Database.lazyManagement(action: Management<T>) = DatabaseScope.lazyManagement(this, action)
+
+/**
+ * Manages a [action] in async coroutine scope.
+ */
+fun <T> Database.managementAsync(action: Management<T>) = DatabaseScope.managementAsync(this, action)
+
+/**
+ * Manages a [action] in launch coroutine scope with start as lazy.
+ */
+fun <T> Database.lazyManagementAsync(action: Management<T>) = DatabaseScope.lazyManagementAsync(this, action)

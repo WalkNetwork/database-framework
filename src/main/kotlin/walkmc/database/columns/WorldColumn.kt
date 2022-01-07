@@ -22,27 +22,44 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package io.github.uinnn.database.common
+package walkmc.database.columns
 
-import io.github.uinnn.database.common.DatabaseScope.manage
-import org.jetbrains.exposed.sql.Database
-
-/**
- * Manages a [manage] in launch coroutine scope.
- */
-fun <T> Database.management(action: Management<T>) = DatabaseScope.management(this, action)
-
-/**
- * Manages a [manage] in launch coroutine scope with start as lazy.
- */
-fun <T> Database.lazyManagement(action: Management<T>) = DatabaseScope.lazyManagement(this, action)
+import kotlinx.serialization.modules.*
+import org.bukkit.*
+import org.jetbrains.exposed.dao.*
+import org.jetbrains.exposed.dao.id.*
+import org.jetbrains.exposed.sql.*
+import walkmc.serializer.common.*
 
 /**
- * Manages a [manage] in async coroutine scope.
+ * Represents a world column type thats is registered from a [JsonVarcharColumnType].
  */
-fun <T> Database.managementAsync(action: Management<T>) = DatabaseScope.managementAsync(this, action)
+class WorldColumnType(
+	module: SerializersModule = FrameworkModule
+) : JsonVarcharColumnType<World>(12, World::class, module)
 
 /**
- * Manages a [manage] in launch coroutine scope with start as lazy.
+ * Represents a id table that their primary key is a world.
  */
-fun <T> Database.lazyManagementAsync(action: Management<T>) = DatabaseScope.lazyManagementAsync(this, action)
+abstract class WorldTable : IdTable<World>() {
+	override val id = world("id").entityId()
+	override val primaryKey by lazy { PrimaryKey(id) }
+}
+
+/**
+ * Represents a world database entity.
+ */
+abstract class WorldEntity(id: EntityID<World>) : Entity<World>(id)
+
+/**
+ * Represents a world database entity class.
+ */
+abstract class WorldEntityClass<T : Entity<World>>(
+	table: IdTable<World>,
+) : EntityClass<World, T>(table)
+
+/**
+ * Registers a world column, with specified name in this table.
+ */
+fun Table.world(name: String, module: SerializersModule = FrameworkModule) =
+	registerColumn<World>(name, WorldColumnType(module))

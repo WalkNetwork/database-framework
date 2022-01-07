@@ -22,17 +22,32 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package io.github.uinnn.database.columns
 
-import org.bukkit.Location
-import org.jetbrains.exposed.sql.Table
+package walkmc.database
 
-/**
- * Represents a location column type thats is registered from a [ProtocolBufferLimitedColumnType].
- */
-class LocationColumnType : ProtocolBufferLimitedColumnType<Location>(16, Location::class)
+import com.zaxxer.hikari.*
+import walkmc.database.factory.*
 
 /**
- * Registers a location column, with specified name in this table.
+ * A server database prototype for working with MySQL databases.
  */
-fun Table.location(name: String) = registerColumn<Location>(name, LocationColumnType())
+open class MySQL(
+	username: String,
+	password: String,
+	databaseName: String,
+	host: String,
+	port: Int = 3306,
+	useSSl: Boolean = false,
+) : AbstractServerStorage(DatabaseType.MYSQL, username, password, databaseName, host, port, useSSl) {
+	override val config: HikariConfig = configurationOf(DatabaseType.MYSQL) {
+		jdbcUrl = "jdbc:mysql://$host:$port/$databaseName?useSSL=$useSSl"
+		this.username = username
+		this.password = password
+		isAutoCommit = false
+		addDataSourceProperty("cachePrepStmts", "true")
+		addDataSourceProperty("prepStmtCacheSize", "350")
+		addDataSourceProperty("prepStmtCacheSqlLimit", "2048")
+		addDataSourceProperty("useServerPrepStmts", "true")
+		addDataSourceProperty("createDatabaseIfNotExist", "true")
+	}
+}

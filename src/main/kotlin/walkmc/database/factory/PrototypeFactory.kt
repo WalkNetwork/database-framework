@@ -22,32 +22,46 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+package walkmc.database.factory
 
-package io.github.uinnn.database
-
-import com.zaxxer.hikari.HikariConfig
-import io.github.uinnn.database.factory.ConfigurationFactory
+import walkmc.database.*
+import java.io.*
 
 /**
- * A server database prototype for working with postgre databases.
+ * A factory object used to create new databases prototypes.
  */
-class PostgrePrototype(
-  username: String,
-  password: String,
-  databaseName: String,
-  host: String,
-  port: Int = 3306,
-  useSSl: Boolean = false
-) : AbstractServerDatabasePrototype(DatabaseType.POSTGRE, username, password, databaseName, host, port, useSSl) {
-  override val config: HikariConfig = ConfigurationFactory.of(DatabaseType.POSTGRE) {
-    jdbcUrl = "jdbc:postgresql://$host:$port/$databaseName?useSSL=$useSSl"
-    this.username = username
-    this.password = password
-    isAutoCommit = false
-    addDataSourceProperty("cachePrepStmts", "true")
-    addDataSourceProperty("prepStmtCacheSize", "350")
-    addDataSourceProperty("prepStmtCacheSqlLimit", "2048")
-    addDataSourceProperty("useServerPrepStmts", "true")
-    addDataSourceProperty("createDatabaseIfNotExist", "true")
-  }
+object PrototypeFactory {
+	
+	/**
+	 * Creates a new [SQLite] by the specified file.
+	 */
+	fun createSQLitePrototype(file: File): LocalStorage = SQLite(file)
+	
+	/**
+	 * Creates a new [MySQL] by the specifieds parameters
+	 * to connect to the server database.
+	 */
+	fun createMySQLPrototype(
+		username: String,
+		password: String,
+		databaseName: String,
+		host: String,
+		port: Int = 3306,
+		useSSL: Boolean = false,
+	): ServerStorage = MySQL(username, password, databaseName, host, port, useSSL)
+	
+	/**
+	 * Creates a new [MySQL] by the serial prototype
+	 * parameters to connect to the server database.
+	 */
+	fun createMySQLPrototype(serial: SerialStorage): ServerStorage {
+		return MySQL(
+			serial.username,
+			serial.password,
+			serial.database,
+			serial.host,
+			serial.port,
+			serial.useSSL
+		)
+	}
 }

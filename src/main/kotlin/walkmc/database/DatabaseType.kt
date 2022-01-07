@@ -22,23 +22,17 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package io.github.uinnn.database.common
+
+package walkmc.database
 
 /**
- * A database service is a service thats only startup and shutdown.
- * Note that you have to call the functions manually.
+ * A type of database, representing all supported databases.
  */
-interface DatabaseService {
-
-  /**
-   * The startup function used to starts this database manager.
-   * This you can add some others functions, like loading all data.
-   */
-  fun startup()
-
-  /**
-   * The shutdown function used to disable this database manager.
-   * This you can save data from a cache, etc.
-   */
-  fun shutdown()
+enum class DatabaseType(val isServer: Boolean, val driver: String) {
+	POSTGRE(true, "org.postgresql.Driver"),
+	MYSQL(true, "com.mysql.jdbc.Driver"),
+	H2(false, "org.h2.Driver"),
+	SQLITE(false, "org.sqlite.JDBC");
+	
+	val isLocal: Boolean = !isServer
 }

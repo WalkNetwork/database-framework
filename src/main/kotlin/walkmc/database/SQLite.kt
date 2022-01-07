@@ -22,34 +22,20 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+package walkmc.database
 
-package io.github.uinnn.database.factory
-
-import com.zaxxer.hikari.HikariConfig
-import io.github.uinnn.database.DatabaseType
-
-typealias ConfigurationBuilder = HikariConfig.() -> Unit
+import com.zaxxer.hikari.*
+import walkmc.database.factory.*
+import java.io.*
 
 /**
- * A factory object used for creating new [HikariConfig].
+ * A local database prototype for working with SQLite databases.
  */
-object ConfigurationFactory {
-
-  /**
-   * Creates a new hikari config with the specified builder.
-   */
-  fun create(builder: ConfigurationBuilder): HikariConfig {
-    return HikariConfig().apply(builder)
-  }
-
-  /**
-   * Creates a new hikari config with the type of database
-   * and the specified builder.
-   */
-  fun of(type: DatabaseType, builder: ConfigurationBuilder): HikariConfig {
-    return HikariConfig().apply {
-      driverClassName = type.driver
-      builder(this)
-    }
-  }
+open class SQLite(file: File) : AbstractLocalStorage(DatabaseType.SQLITE, file) {
+	override val config: HikariConfig = configurationOf(DatabaseType.SQLITE) {
+		jdbcUrl = "jdbc:sqlite:${file.path}"
+		isAutoCommit = false
+		connectionTestQuery = "SELECT 1"
+		transactionIsolation = "TRANSACTION_SERIALIZABLE"
+	}
 }

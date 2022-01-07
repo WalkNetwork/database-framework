@@ -22,20 +22,52 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package io.github.uinnn.database
 
-import com.zaxxer.hikari.HikariConfig
-import io.github.uinnn.database.factory.ConfigurationFactory
-import java.io.File
+package walkmc.database.factory
+
+import com.zaxxer.hikari.*
+import walkmc.database.*
+
+typealias ConfigurationBuilder = HikariConfig.() -> Unit
 
 /**
- * A local database prototype for working with H2 databases.
+ * A factory object used for creating new [HikariConfig].
  */
-class H2Prototype(file: File) : AbstractLocalDatabasePrototype(DatabaseType.H2, file) {
-  override val config: HikariConfig = ConfigurationFactory.of(DatabaseType.H2) {
-    jdbcUrl = "jdbc:h2:./${file.path}"
-    isAutoCommit = false
-    connectionTestQuery = "SELECT 1"
-    transactionIsolation = "TRANSACTION_SERIALIZABLE"
-  }
+object ConfigurationFactory {
+	
+	/**
+	 * Creates a new hikari config with the specified builder.
+	 */
+	fun create(builder: ConfigurationBuilder): HikariConfig {
+		return HikariConfig().apply(builder)
+	}
+	
+	/**
+	 * Creates a new hikari config with the type of database
+	 * and the specified builder.
+	 */
+	fun of(type: DatabaseType, builder: ConfigurationBuilder): HikariConfig {
+		return HikariConfig().apply {
+			driverClassName = type.driver
+			builder(this)
+		}
+	}
+}
+
+/**
+ * Creates a new hikari config with the specified builder.
+ */
+fun createConfiguration(builder: ConfigurationBuilder): HikariConfig {
+	return HikariConfig().apply(builder)
+}
+
+/**
+ * Creates a new hikari config with the type of database
+ * and the specified builder.
+ */
+fun configurationOf(type: DatabaseType, builder: ConfigurationBuilder): HikariConfig {
+	return HikariConfig().apply {
+		driverClassName = type.driver
+		builder(this)
+	}
 }
