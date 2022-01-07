@@ -2,10 +2,10 @@
   <img align="center" src="https://img.shields.io/static/v1?style=for-the-badge&label=author&message=uinnn&color=informational"/>
 </a>
 <a href="https://github.com/uinnn/database-framework">
-  <img align="center" src="https://img.shields.io/static/v1?style=for-the-badge&label=version&message=1.0.2v&color=ff69b4"/>
+  <img align="center" src="https://img.shields.io/github/v/release/uinnn/database-framework?color=yellow&label=database-framework&style=for-the-badge"/>
 </a>
 <a href="https://github.com/uinnn/database-framework">
-  <img align="center" src="https://img.shields.io/static/v1?style=for-the-badge&label=maven-central&message=1.0.2&color=orange"/>
+  <img align="center" src="https://img.shields.io/github/v/release/uinnn/database-framework?color=ff69b4&label=maven-central&style=for-the-badge"/>
 </a>
 <a href="https://github.com/uinnn/database-framework">
   <img align="center" src="https://img.shields.io/static/v1?style=for-the-badge&label=license&message=MIT License&color=success"/>
@@ -257,7 +257,7 @@ UserTableManager.manageUpdateOrInsertAll(map)
 ### Asynchronously transactions
 To use asynchronously transactions is very simple:
 ```kt
-database.management { // asynchronous transaction scope
+UserTableManager.management { // asynchronous transaction scope
   UserTableManager.create() // creates the table
   // inserts 10 entity in the database
   repeat(10) {
@@ -269,7 +269,7 @@ database.management { // asynchronous transaction scope
 ### Lazy management
 The lazy management is very similar to the default management, but this will not be executed until a start function is called.
 ```kt
-val management = database.lazyManagement { // asynchronous transaction scope
+val management = UserTableManager.lazyManagement { // asynchronous transaction scope
   UserTableManager.create() // creates the table
   // inserts 10 entity in the database
   repeat(10) {
@@ -289,12 +289,12 @@ The `database-framework` is in the central maven repository. Thus making things 
 ### Gradle Kotlin DSL
 
 ```gradle
-implementation("io.github.uinnn:database-framework:1.0.2")
+implementation("io.github.uinnn:database-framework:1.0.3")
 ```
 
 ### Gradle
 ```gradle
-implementation 'io.github.uinnn:database-framework:1.0.2'
+implementation 'io.github.uinnn:database-framework:1.0.3'
 ```
 
 ### Maven
@@ -303,7 +303,7 @@ implementation 'io.github.uinnn:database-framework:1.0.2'
 <dependency>
   <groupId>io.github.uinnn</groupId>
   <artifactId>database-framework</artifactId>
-  <version>1.0.2</version>
+  <version>1.0.3</version>
 </dependency>
 ```
 
@@ -322,7 +322,7 @@ dependencies {
   implementation(kotlin("stdlib-jdk8")) // the kotlin std lib with jdk8 
   implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.1") // the kotlin coroutines used to asynchronously manage
   
-  implementation("io.github.uinnn:serializer-framework:1.6.2") // the serializer framework used to use new column types
+  implementation("io.github.uinnn:serializer-framework:1.6.5") // the serializer framework used to use new column types
   
   // the following dependencies is marked as API by the database-framework:
   api("com.zaxxer:HikariCP:4.0.3") // the hikariCP version 4.0.3
