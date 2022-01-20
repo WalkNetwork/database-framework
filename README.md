@@ -11,10 +11,6 @@
 > This repository is a showcase from WalkMC Network database-framework.
 > This will not work in your server.
 
-### Supported types:
-* MySQL 
-* SQLite
-
 ### Creating:
 * MySQL
 ```kt
