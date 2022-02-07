@@ -35,7 +35,7 @@ typealias Management<T> = Transaction.() -> T
  * A database scope is a coroutine scope thats executes
  * database transactions asynchronously.
  */
-object DatabaseScope : CoroutineScope {
+class DatabaseScope : CoroutineScope {
 	override val coroutineContext: CoroutineContext = EmptyCoroutineContext
 	
 	/**

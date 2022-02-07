@@ -29,6 +29,7 @@ import org.jetbrains.exposed.dao.*
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.*
 import org.jetbrains.exposed.sql.transactions.experimental.*
+import walkmc.extensions.*
 
 typealias SQLExpression = SqlExpressionBuilder.() -> Op<Boolean>
 
@@ -43,6 +44,13 @@ typealias SQLExpression = SqlExpressionBuilder.() -> Op<Boolean>
  * [T] refers to the entity model of this table.
  */
 interface IDatabaseManager<K, V, T : Entity<*>> {
+	
+	/**
+	 * The coroutine scope owner of this database manager.
+	 *
+	 * Used to setup async tasks in this database.
+	 */
+	val scope: DatabaseScope
 	
 	/**
 	 * The table of this manager.
@@ -100,6 +108,7 @@ interface IDatabaseManager<K, V, T : Entity<*>> {
 abstract class DatabaseManager<K, V, T : Entity<*>>(
 	override val table: Table,
 	override val database: Database,
+	override val scope: DatabaseScope = DatabaseScope()
 ) : IDatabaseManager<K, V, T>
 
 /**
@@ -336,7 +345,7 @@ fun <A, B, C : Entity<*>> IDatabaseManager<A, B, C>.selectAll(): Query = table.s
 inline fun <T, A, B, C : Entity<*>, Z : IDatabaseManager<A, B, C>> Z.management(
 	crossinline action: Z.(Transaction) -> T,
 ): Job {
-	return DatabaseScope.management(database) {
+	return scope.management(database) {
 		action(this@management, this)
 	}
 }
@@ -347,7 +356,7 @@ inline fun <T, A, B, C : Entity<*>, Z : IDatabaseManager<A, B, C>> Z.management(
 inline fun <T, A, B, C : Entity<*>, Z : IDatabaseManager<A, B, C>> Z.lazyManagement(
 	crossinline action: Z.(Transaction) -> T,
 ): Job {
-	return DatabaseScope.lazyManagement(database) {
+	return scope.lazyManagement(database) {
 		action(this@lazyManagement, this)
 	}
 }
@@ -358,7 +367,7 @@ inline fun <T, A, B, C : Entity<*>, Z : IDatabaseManager<A, B, C>> Z.lazyManagem
 inline fun <T, A, B, C : Entity<*>, Z : IDatabaseManager<A, B, C>> Z.managementAsync(
 	crossinline action: Z.(Transaction) -> T,
 ): Deferred<T> {
-	return DatabaseScope.managementAsync(database) {
+	return scope.managementAsync(database) {
 		action(this@managementAsync, this)
 	}
 }
@@ -369,7 +378,7 @@ inline fun <T, A, B, C : Entity<*>, Z : IDatabaseManager<A, B, C>> Z.managementA
 inline fun <T, A, B, C : Entity<*>, Z : IDatabaseManager<A, B, C>> Z.lazyManagementAsync(
 	crossinline action: Z.(Transaction) -> T,
 ): Deferred<T> {
-	return DatabaseScope.lazyManagementAsync(database) {
+	return scope.lazyManagementAsync(database) {
 		action(this@lazyManagementAsync, this)
 	}
 }

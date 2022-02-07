@@ -34,5 +34,5 @@ enum class DatabaseType(val isServer: Boolean, val driver: String) {
 	H2(false, "org.h2.Driver"),
 	SQLITE(false, "org.sqlite.JDBC");
 	
-	val isLocal: Boolean = !isServer
+	val isLocal: Boolean get() = !isServer
 }
