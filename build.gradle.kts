@@ -1,16 +1,15 @@
 plugins {
-	kotlin("jvm") version "1.5.31"
-	kotlin("plugin.serialization") version "1.5.31"
+	kotlin("jvm") version "1.6.10"
+	kotlin("plugin.serialization") version "1.6.10"
 	id("java")
-	id("com.github.johnrengelman.shadow") version "6.0.0"
+	id("com.github.johnrengelman.shadow") version "7.0.0"
 	id("maven-publish")
 	id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
 	id("signing")
-	id("org.jetbrains.dokka") version "1.5.0"
 }
 
 group = "io.github.uinnn"
-version = "1.3.1"
+version = "1.4.0"
 
 repositories {
 	mavenLocal()
@@ -18,16 +17,16 @@ repositories {
 }
 
 dependencies {
-	compileOnly("io.github.uinnn:walk-server:1.8.2")
-	compileOnly("io.github.uinnn:serializer-framework:2.2.3")
-	compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-core:1.3.1")
+	compileOnly("io.github.uinnn:walk-server:2.4.0")
+	compileOnly("io.github.uinnn:serializer-framework:2.4.0")
+	compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-core:1.3.2")
 	
 	api(kotlin("stdlib-jdk8"))
-	api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
+	api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0")
 	api("com.zaxxer:HikariCP:4.0.3")
-	api("org.jetbrains.exposed:exposed-core:0.36.2")
-	api("org.jetbrains.exposed:exposed-dao:0.36.2")
-	api("org.jetbrains.exposed:exposed-jdbc:0.36.2")
+	api("org.jetbrains.exposed:exposed-core:0.37.3")
+	api("org.jetbrains.exposed:exposed-dao:0.37.3")
+	api("org.jetbrains.exposed:exposed-jdbc:0.37.3")
 	api("org.xerial:sqlite-jdbc:3.36.0.1")
 }
 
